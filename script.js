@@ -40,6 +40,13 @@ function renderCharacterTransform() {
   character.style.setProperty("--facing", `${facingAngle.toFixed(1)}deg`);
 }
 
+function updateCharacterTilt(horizontal, vertical) {
+  const pitch = vertical * 4.2;
+  const roll = horizontal * 2.4;
+  character.style.setProperty("--pitch", `${pitch.toFixed(2)}deg`);
+  character.style.setProperty("--roll", `${roll.toFixed(2)}deg`);
+}
+
 function updateFog() {
   const dx = player.x - 50;
   const dy = (player.y - 56) * 0.66;
@@ -104,16 +111,20 @@ function animate(now) {
 
   if (horizontal !== 0 || vertical !== 0) {
     const length = Math.hypot(horizontal, vertical) || 1;
-    player.x += (horizontal / length) * step;
-    player.y += (vertical / length) * step * 1.35;
+    const xUnit = horizontal / length;
+    const yUnit = vertical / length;
+    player.x += xUnit * step;
+    player.y += yUnit * step;
     player.x = clamp(player.x, limits.xMin, limits.xMax);
     player.y = clamp(player.y, limits.yMin, limits.yMax);
     setCharacterPosition();
     updateFog();
     updateDirectionVisual(horizontal, vertical);
+    updateCharacterTilt(xUnit, yUnit);
     character.classList.add("is-walking");
   } else {
     character.classList.remove("is-walking");
+    updateCharacterTilt(0, 0);
   }
 
   animationFrame = requestAnimationFrame(animate);
