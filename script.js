@@ -1,5 +1,6 @@
 const scene = document.getElementById("scene");
 const character = document.getElementById("character");
+const arrowHint = document.getElementById("arrowHint");
 
 const keys = {
   ArrowUp: false,
@@ -11,19 +12,20 @@ const keys = {
 const player = {
   x: 30,
   y: 64,
-  speed: 0.02,
+  speed: 0.024,
 };
 
 const limits = {
-  xMin: 2,
-  xMax: 98,
-  yMin: 2,
-  yMax: 98,
+  xMin: 0,
+  xMax: 100,
+  yMin: 0,
+  yMax: 100,
 };
 
 let animationFrame = null;
 let previousTime = performance.now();
 let facingAngle = 0;
+let arrowHintHidden = false;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -40,14 +42,14 @@ function renderCharacterTransform() {
 
 function updateFog() {
   const dx = player.x - 50;
-  const dy = player.y - 56;
+  const dy = (player.y - 56) * 0.66;
   const distance = Math.hypot(dx, dy);
   const maxDistance = 38;
   const proximity = clamp(1 - distance / maxDistance, 0, 1);
 
   const fogAlpha = 0.92 * proximity;
   const clearW = 74 - proximity * 40;
-  const clearH = 50 - proximity * 28;
+  const clearH = 58 - proximity * 24;
 
   scene.style.setProperty("--fog-alpha", fogAlpha.toFixed(3));
   scene.style.setProperty("--clear-w", `${clearW.toFixed(2)}%`);
@@ -76,9 +78,15 @@ function setFacingClasses(horizontal, vertical) {
 
 function updateDirectionVisual(horizontal, vertical) {
   if (horizontal === 0 && vertical === 0) return;
-  facingAngle = (Math.atan2(horizontal, vertical) * 180) / Math.PI;
+  facingAngle = (Math.atan2(horizontal, -vertical) * 180) / Math.PI;
   renderCharacterTransform();
   setFacingClasses(horizontal, vertical);
+}
+
+function hideArrowHint() {
+  if (arrowHintHidden || !arrowHint) return;
+  arrowHintHidden = true;
+  arrowHint.classList.add("hidden");
 }
 
 function animate(now) {
@@ -97,7 +105,7 @@ function animate(now) {
   if (horizontal !== 0 || vertical !== 0) {
     const length = Math.hypot(horizontal, vertical) || 1;
     player.x += (horizontal / length) * step;
-    player.y += (vertical / length) * step;
+    player.y += (vertical / length) * step * 1.35;
     player.x = clamp(player.x, limits.xMin, limits.xMax);
     player.y = clamp(player.y, limits.yMin, limits.yMax);
     setCharacterPosition();
@@ -118,6 +126,7 @@ function isArrowKey(key) {
 window.addEventListener("keydown", (event) => {
   if (!isArrowKey(event.key)) return;
   keys[event.key] = true;
+  hideArrowHint();
   event.preventDefault();
 });
 
