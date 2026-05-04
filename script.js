@@ -11,19 +11,19 @@ const keys = {
 const player = {
   x: 30,
   y: 64,
-  speed: 0.16,
+  speed: 0.02,
 };
 
 const limits = {
-  xMin: 8,
-  xMax: 92,
-  yMin: 24,
-  yMax: 82,
+  xMin: 2,
+  xMax: 98,
+  yMin: 2,
+  yMax: 98,
 };
 
 let animationFrame = null;
 let previousTime = performance.now();
-let facing = 1;
+let facingAngle = 0;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -35,7 +35,7 @@ function setCharacterPosition() {
 }
 
 function renderCharacterTransform() {
-  character.style.transform = `translate(-50%, -50%) scaleX(${facing})`;
+  character.style.setProperty("--facing", `${facingAngle.toFixed(1)}deg`);
 }
 
 function updateFog() {
@@ -54,11 +54,31 @@ function updateFog() {
   scene.style.setProperty("--clear-h", `${clearH.toFixed(2)}%`);
 }
 
-function updateDirectionVisual(horizontal) {
-  if (horizontal !== 0) {
-    facing = horizontal > 0 ? 1 : -1;
-    renderCharacterTransform();
+function setFacingClasses(horizontal, vertical) {
+  character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
+
+  if (Math.abs(vertical) >= Math.abs(horizontal)) {
+    if (vertical > 0) {
+      character.classList.add("facing-front");
+    } else {
+      character.classList.add("facing-back");
+    }
+    return;
   }
+
+  character.classList.add("facing-side");
+  if (horizontal > 0) {
+    character.classList.add("right");
+  } else {
+    character.classList.add("left");
+  }
+}
+
+function updateDirectionVisual(horizontal, vertical) {
+  if (horizontal === 0 && vertical === 0) return;
+  facingAngle = (Math.atan2(horizontal, vertical) * 180) / Math.PI;
+  renderCharacterTransform();
+  setFacingClasses(horizontal, vertical);
 }
 
 function animate(now) {
@@ -82,7 +102,10 @@ function animate(now) {
     player.y = clamp(player.y, limits.yMin, limits.yMax);
     setCharacterPosition();
     updateFog();
-    updateDirectionVisual(horizontal);
+    updateDirectionVisual(horizontal, vertical);
+    character.classList.add("is-walking");
+  } else {
+    character.classList.remove("is-walking");
   }
 
   animationFrame = requestAnimationFrame(animate);
@@ -113,6 +136,7 @@ window.addEventListener("blur", () => {
 setCharacterPosition();
 updateFog();
 character.classList.add("is-emerging");
+character.classList.add("facing-front");
 setTimeout(() => {
   character.classList.remove("is-emerging");
   renderCharacterTransform();
