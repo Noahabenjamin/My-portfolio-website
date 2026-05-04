@@ -1,6 +1,7 @@
 const scene = document.getElementById("scene");
 const character = document.getElementById("character");
 const arrowHint = document.getElementById("arrowHint");
+const portalWorld = document.getElementById("portalWorld");
 
 const keys = {
   ArrowUp: false,
@@ -31,10 +32,15 @@ const limits = {
   yMax: 100,
 };
 
+const HOLE_X = 50;
+const HOLE_Y = 56;
+const FALL_RADIUS = 6;
+
 let animationFrame = null;
 let previousTime = performance.now();
 let facingAngle = 0;
 let arrowHintHidden = false;
+let isFalling = false;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -57,8 +63,8 @@ function updateCharacterTilt(horizontal, vertical) {
 }
 
 function updateFog() {
-  const dx = player.x - 50;
-  const dy = (player.y - 56) * 0.66;
+  const dx = player.x - HOLE_X;
+  const dy = (player.y - HOLE_Y) * 0.66;
   const distance = Math.hypot(dx, dy);
   const maxDistance = 38;
   const proximity = clamp(1 - distance / maxDistance, 0, 1);
@@ -109,6 +115,36 @@ function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
+function startFalling() {
+  isFalling = true;
+  Object.keys(keys).forEach((k) => { keys[k] = false; });
+  character.classList.remove("is-walking");
+  character.classList.add("is-falling");
+  // Portal expands after the character has mostly vanished
+  setTimeout(() => {
+    portalWorld.classList.add("active");
+    portalWorld.setAttribute("aria-hidden", "false");
+  }, 850);
+}
+
+function returnFromPortal() {
+  portalWorld.classList.remove("active");
+  portalWorld.setAttribute("aria-hidden", "true");
+  setTimeout(() => {
+    isFalling = false;
+    character.classList.remove("is-falling");
+    player.x = 16;
+    player.y = 64;
+    setCharacterPosition();
+    updateFog();
+    character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
+    character.classList.add("facing-front");
+    facingAngle = 0;
+    renderCharacterTransform();
+    updateCharacterTilt(0, 0);
+  }, 900);
+}
+
 function animate(now) {
   const delta = now - previousTime;
   previousTime = now;
@@ -142,7 +178,7 @@ function animate(now) {
       updateCharacterTilt(1, 0);
     } else {
       intro.active = false;
-      character.classList.remove("is-emerging", "is-intro-crawl", "is-walking", "facing-side", "left");
+      character.classList.remove("is-emerging", "is-intro-crawl", "is-walking", "facing-side", "left", "right");
       character.classList.add("facing-front");
       facingAngle = 0;
       renderCharacterTransform();
@@ -151,6 +187,11 @@ function animate(now) {
 
     setCharacterPosition();
     updateFog();
+    animationFrame = requestAnimationFrame(animate);
+    return;
+  }
+
+  if (isFalling) {
     animationFrame = requestAnimationFrame(animate);
     return;
   }
@@ -182,6 +223,13 @@ function animate(now) {
     updateCharacterTilt(0, 0);
   }
 
+  // Hole collision check
+  const dx = player.x - HOLE_X;
+  const dy = (player.y - HOLE_Y) * 0.66;
+  if (Math.hypot(dx, dy) < FALL_RADIUS) {
+    startFalling();
+  }
+
   animationFrame = requestAnimationFrame(animate);
 }
 
@@ -190,6 +238,12 @@ function isArrowKey(key) {
 }
 
 window.addEventListener("keydown", (event) => {
+  if (isFalling) {
+    if (portalWorld.classList.contains("active")) {
+      returnFromPortal();
+    }
+    return;
+  }
   if (!isArrowKey(event.key)) return;
   keys[event.key] = true;
   hideArrowHint();

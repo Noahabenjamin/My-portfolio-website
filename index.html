@@ -19,24 +19,88 @@
             <div class="character-model">
               <span class="head">
                 <span class="face-3d"></span>
+                <span class="face-3d-l"></span>
+                <span class="face-3d-t"></span>
                 <span class="face-line"></span>
                 <span class="eye eye-left"></span>
                 <span class="eye eye-right"></span>
               </span>
-              <span class="torso"><span class="face-3d"></span></span>
-              <span class="arm arm-left"><span class="face-3d"></span><span class="hand"></span></span>
-              <span class="arm arm-right"><span class="face-3d"></span><span class="hand"></span></span>
-              <span class="leg leg-left"><span class="face-3d"></span><span class="foot"></span></span>
-              <span class="leg leg-right"><span class="face-3d"></span><span class="foot"></span></span>
+              <span class="torso">
+                <span class="face-3d"></span>
+                <span class="face-3d-l"></span>
+              </span>
+              <span class="arm arm-left">
+                <span class="face-3d"></span>
+                <span class="face-3d-l"></span>
+                <span class="hand"></span>
+              </span>
+              <span class="arm arm-right">
+                <span class="face-3d"></span>
+                <span class="face-3d-l"></span>
+                <span class="hand"></span>
+              </span>
+              <span class="leg leg-left">
+                <span class="face-3d"></span>
+                <span class="face-3d-l"></span>
+                <span class="foot"></span>
+              </span>
+              <span class="leg leg-right">
+                <span class="face-3d"></span>
+                <span class="face-3d-l"></span>
+                <span class="foot"></span>
+              </span>
             </div>
           </div>
         </div>
       </div>
+
       <div class="arrow-hint" id="arrowHint" aria-hidden="true">
         <span class="arrow arrow-up"></span>
         <span class="arrow arrow-left"></span>
         <span class="arrow arrow-down"></span>
         <span class="arrow arrow-right"></span>
+      </div>
+
+      <!-- Portal world — shown when character falls into hole -->
+      <div class="portal-world" id="portalWorld" aria-hidden="true">
+        <div class="portal-bg"></div>
+        <div class="portal-char">
+          <div class="portal-model">
+            <span class="head">
+              <span class="face-3d"></span>
+              <span class="face-3d-l"></span>
+              <span class="face-3d-t"></span>
+              <span class="face-line"></span>
+              <span class="eye eye-left"></span>
+              <span class="eye eye-right"></span>
+            </span>
+            <span class="torso">
+              <span class="face-3d"></span>
+              <span class="face-3d-l"></span>
+            </span>
+            <span class="arm arm-left">
+              <span class="face-3d"></span>
+              <span class="face-3d-l"></span>
+              <span class="hand"></span>
+            </span>
+            <span class="arm arm-right">
+              <span class="face-3d"></span>
+              <span class="face-3d-l"></span>
+              <span class="hand"></span>
+            </span>
+            <span class="leg leg-left">
+              <span class="face-3d"></span>
+              <span class="face-3d-l"></span>
+              <span class="foot"></span>
+            </span>
+            <span class="leg leg-right">
+              <span class="face-3d"></span>
+              <span class="face-3d-l"></span>
+              <span class="foot"></span>
+            </span>
+          </div>
+        </div>
+        <p class="portal-hint">Press any key to return</p>
       </div>
     </main>
     <script src="script.js"></script>
