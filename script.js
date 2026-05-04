@@ -26,7 +26,6 @@ let animationFrame = null;
 let previousTime = performance.now();
 let facingAngle = 0;
 let arrowHintHidden = false;
-let walkPhase = 0;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -42,33 +41,10 @@ function renderCharacterTransform() {
 }
 
 function updateCharacterTilt(horizontal, vertical) {
-  const pitch = vertical * 4.8;
-  const roll = horizontal * 2.8;
+  const pitch = vertical * 4.2;
+  const roll = horizontal * 2.4;
   character.style.setProperty("--pitch", `${pitch.toFixed(2)}deg`);
   character.style.setProperty("--roll", `${roll.toFixed(2)}deg`);
-  const sideCompress = 1 - Math.abs(horizontal) * 0.09;
-  character.style.setProperty("--side-compress", sideCompress.toFixed(3));
-}
-
-function updateWalkPose(speedUnit, delta) {
-  walkPhase += delta * (0.013 + speedUnit * 0.012);
-  const swing = Math.sin(walkPhase);
-  const counter = Math.sin(walkPhase + Math.PI);
-  const bob = Math.abs(Math.sin(walkPhase * 0.5));
-
-  character.style.setProperty("--arm-l", `${(6.5 * swing).toFixed(2)}deg`);
-  character.style.setProperty("--arm-r", `${(6.5 * counter).toFixed(2)}deg`);
-  character.style.setProperty("--leg-l", `${(5.4 * counter).toFixed(2)}deg`);
-  character.style.setProperty("--leg-r", `${(5.4 * swing).toFixed(2)}deg`);
-  character.style.setProperty("--bob-y", `${(bob * 1.6).toFixed(2)}px`);
-}
-
-function resetWalkPose() {
-  character.style.setProperty("--arm-l", "4deg");
-  character.style.setProperty("--arm-r", "-4deg");
-  character.style.setProperty("--leg-l", "3deg");
-  character.style.setProperty("--leg-r", "-3deg");
-  character.style.setProperty("--bob-y", "0px");
 }
 
 function updateFog() {
@@ -135,10 +111,10 @@ function animate(now) {
     updateFog();
     updateDirectionVisual(horizontal, vertical);
     updateCharacterTilt(xUnit, yUnit);
-    updateWalkPose(length, delta);
+    character.classList.add("is-walking");
   } else {
+    character.classList.remove("is-walking");
     updateCharacterTilt(0, 0);
-    resetWalkPose();
   }
 
   animationFrame = requestAnimationFrame(animate);

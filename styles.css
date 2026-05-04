@@ -180,25 +180,14 @@ body {
   --char-size: clamp(56px, 5vw, 74px);
   --pitch: 0deg;
   --roll: 0deg;
-  --arm-l: 4deg;
-  --arm-r: -4deg;
-  --leg-l: 3deg;
-  --leg-r: -3deg;
-  --bob-y: 0px;
-  --side-compress: 1;
   position: absolute;
   left: 30%;
   top: 64%;
   width: calc(var(--char-size) * 1.05);
   height: calc(var(--char-size) * 1.95);
-  transform:
-    translate(-50%, calc(-50% + var(--bob-y)))
-    rotateX(var(--pitch))
-    rotateY(var(--facing, 0deg))
-    rotateZ(var(--roll))
-    scaleX(var(--side-compress));
+  transform: translate(-50%, -50%) rotateX(var(--pitch)) rotateY(var(--facing, 0deg)) rotateZ(var(--roll));
   transform-style: preserve-3d;
-  perspective: 620px;
+  perspective: 520px;
   z-index: 6;
   filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.12));
 }
@@ -254,7 +243,7 @@ body {
   left: 26%;
   top: 0;
   z-index: 2;
-  transform: translateZ(15px);
+  transform: translateZ(10px);
 }
 
 .character .head::before {
@@ -263,16 +252,7 @@ body {
   inset: 8% 7%;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  transform: translateZ(-7px);
-}
-
-.character .head::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: radial-gradient(circle at 74% 56%, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0) 50%);
-  transform: translateZ(-3px);
+  transform: translateZ(-4px);
 }
 
 .character .torso {
@@ -282,7 +262,7 @@ body {
   top: 15%;
   border-radius: 44% 44% 40% 40% / 34% 34% 52% 52%;
   z-index: 1;
-  transform: translateZ(11px);
+  transform: translateZ(6px);
 }
 
 .character .torso::before {
@@ -291,16 +271,7 @@ body {
   inset: 6% 7% 8%;
   border-radius: inherit;
   background: radial-gradient(circle at 66% 72%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 48%);
-  transform: translateZ(-8px);
-}
-
-.character .torso::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 78% 58%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 52%);
-  transform: translateZ(-2px);
+  transform: translateZ(-5px);
 }
 
 .character .arm {
@@ -313,12 +284,12 @@ body {
 
 .character .arm-left {
   left: 3%;
-  transform: translateZ(9px) rotate(var(--arm-l));
+  transform: translateZ(3px) rotate(4deg);
 }
 
 .character .arm-right {
   right: 3%;
-  transform: translateZ(9px) rotate(var(--arm-r));
+  transform: translateZ(3px) rotate(-4deg);
 }
 
 .character .leg {
@@ -331,12 +302,12 @@ body {
 
 .character .leg-left {
   left: 27%;
-  transform: translateZ(6px) rotate(var(--leg-l));
+  transform: translateZ(1px) rotate(3deg);
 }
 
 .character .leg-right {
   right: 27%;
-  transform: translateZ(6px) rotate(var(--leg-r));
+  transform: translateZ(1px) rotate(-3deg);
 }
 
 .character .hand {
@@ -424,6 +395,71 @@ body {
   opacity: 1;
 }
 
+.character.is-walking .arm-left {
+  animation: arm-swing-left 0.6s ease-in-out infinite alternate;
+}
+
+.character.is-walking .arm-right {
+  animation: arm-swing-right 0.6s ease-in-out infinite alternate;
+}
+
+.character.is-walking .leg-left {
+  animation: leg-swing-right 0.6s ease-in-out infinite alternate;
+}
+
+.character.is-walking .leg-right {
+  animation: leg-swing-left 0.6s ease-in-out infinite alternate;
+}
+
+.character.is-walking .character-model {
+  animation: body-bob 0.6s ease-in-out infinite;
+}
+
+@keyframes arm-swing-left {
+  from {
+    transform: translateZ(3px) rotate(4.5deg);
+  }
+  to {
+    transform: translateZ(3px) rotate(-4.5deg);
+  }
+}
+
+@keyframes arm-swing-right {
+  from {
+    transform: translateZ(3px) rotate(-4.5deg);
+  }
+  to {
+    transform: translateZ(3px) rotate(4.5deg);
+  }
+}
+
+@keyframes leg-swing-left {
+  from {
+    transform: translateZ(1px) rotate(3.5deg);
+  }
+  to {
+    transform: translateZ(1px) rotate(-3.5deg);
+  }
+}
+
+@keyframes leg-swing-right {
+  from {
+    transform: translateZ(1px) rotate(-3.5deg);
+  }
+  to {
+    transform: translateZ(1px) rotate(3.5deg);
+  }
+}
+
+@keyframes body-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(1px);
+  }
+}
 
 @keyframes crawl-out {
   0% {
@@ -451,12 +487,12 @@ body {
   right: clamp(92px, 8.5vw, 140px);
   bottom: clamp(74px, 8.2vw, 124px);
   width: 172px;
-  height: 168px;
+  height: 136px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   column-gap: 34px;
-  row-gap: 14px;
+  row-gap: 22px;
   pointer-events: none;
   opacity: 0.78;
   transition: opacity 320ms ease;
@@ -508,21 +544,21 @@ body {
   grid-column: 1;
   grid-row: 2;
   transform: rotate(-90deg);
-  margin-top: -8px;
+  margin-top: -10px;
 }
 
 .arrow-down {
   grid-column: 2;
-  grid-row: 3;
+  grid-row: 2;
   transform: rotate(180deg);
-  margin-top: -2px;
+  margin-top: 10px;
 }
 
 .arrow-right {
   grid-column: 3;
   grid-row: 2;
   transform: rotate(90deg);
-  margin-top: -8px;
+  margin-top: -10px;
 }
 
 @keyframes arrow-pulse {
