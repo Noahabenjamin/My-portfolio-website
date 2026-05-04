@@ -65,11 +65,21 @@ body {
   height: var(--hole-h);
   transform: translate(-50%, -50%);
   border-radius: 999px;
-  background: #040404;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.25),
-    0 20px 18px rgba(0, 0, 0, 0.18);
+  background: linear-gradient(180deg, #4f4f4f 0%, #9e9e9e 38%, #5b5b5b 72%, #2f2f2f 100%);
+  box-shadow: 0 14px 14px rgba(0, 0, 0, 0.16);
   z-index: 4;
+}
+
+.sewer-hole::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  top: 30%;
+  width: 88%;
+  height: 62%;
+  border-radius: 999px;
+  background: #010101;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .sign-group {
@@ -91,17 +101,11 @@ body {
   width: clamp(8px, 0.7vw, 12px);
   height: var(--sign-w);
   border-radius: 10px;
-  background:
-    linear-gradient(90deg, #5f3b22 0%, #845338 50%, #4f311d 100%),
-    repeating-linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.06) 0 10px,
-      rgba(0, 0, 0, 0.08) 10px 20px
-    );
+  background: linear-gradient(90deg, #3f2617 0%, #4a2d1b 50%, #3a2215 100%);
   box-shadow:
     0 8px 12px rgba(0, 0, 0, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 -10px 6px rgba(0, 0, 0, 0.12);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 -10px 8px rgba(0, 0, 0, 0.18);
   z-index: 1;
 }
 
@@ -113,18 +117,11 @@ body {
   height: var(--sign-h);
   padding: 7px 6px;
   border-radius: 4px;
-  border: 1px solid #4c2d1a;
-  background:
-    linear-gradient(0deg, rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.05)),
-    repeating-linear-gradient(
-      12deg,
-      #6d4328 0 8px,
-      #7b4d2f 8px 15px,
-      #5d3821 15px 23px
-    );
+  border: 1px solid #2f1b10;
+  background: linear-gradient(180deg, #4b2d1b 0%, #4a2c1a 55%, #3e2416 100%);
   color: #f6f6f6;
   font-family: "Times New Roman", Georgia, serif;
-  font-size: clamp(0.65rem, 0.95vw, 0.9rem);
+  font-size: clamp(0.66rem, 0.98vw, 0.94rem);
   letter-spacing: 0.02em;
   line-height: 1.05;
   text-align: center;
@@ -136,8 +133,8 @@ body {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   box-shadow:
     0 7px 9px rgba(0, 0, 0, 0.25),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-    inset 0 -7px 7px rgba(0, 0, 0, 0.14);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 -8px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   z-index: 2;
 }
@@ -146,7 +143,7 @@ body {
 .wood-sign::after {
   content: "";
   position: absolute;
-  background: rgba(50, 28, 18, 0.35);
+  background: rgba(22, 12, 7, 0.35);
 }
 
 .wood-sign::before {
@@ -174,6 +171,11 @@ body {
   height: calc(var(--char-size) * 1.7);
   transform: translate(-50%, -50%);
   z-index: 6;
+  transition: filter 160ms linear;
+}
+
+.character.is-emerging {
+  animation: crawl-out 1.2s ease-out forwards;
 }
 
 .character span {
@@ -227,6 +229,27 @@ body {
 .character .leg-right {
   right: 32%;
   transform: rotate(-8deg);
+}
+
+@keyframes crawl-out {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 12%) scale(0.88);
+    filter: blur(1px);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-50%, -20%) scale(0.94);
+    filter: blur(0);
+  }
+  65% {
+    transform: translate(-50%, -56%) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0);
+  }
 }
 
 .hint {

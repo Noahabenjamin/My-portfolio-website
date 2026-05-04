@@ -23,6 +23,7 @@ const limits = {
 
 let animationFrame = null;
 let previousTime = performance.now();
+let facing = 1;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -31,6 +32,10 @@ function clamp(value, min, max) {
 function setCharacterPosition() {
   character.style.left = `${player.x}%`;
   character.style.top = `${player.y}%`;
+}
+
+function renderCharacterTransform() {
+  character.style.transform = `translate(-50%, -50%) scaleX(${facing})`;
 }
 
 function updateFog() {
@@ -51,9 +56,8 @@ function updateFog() {
 
 function updateDirectionVisual(horizontal) {
   if (horizontal !== 0) {
-    character.style.transform = `translate(-50%, -50%) scaleX(${horizontal > 0 ? 1 : -1})`;
-  } else {
-    character.style.transform = "translate(-50%, -50%)";
+    facing = horizontal > 0 ? 1 : -1;
+    renderCharacterTransform();
   }
 }
 
@@ -108,6 +112,15 @@ window.addEventListener("blur", () => {
 
 setCharacterPosition();
 updateFog();
+character.classList.add("is-emerging");
+setTimeout(() => {
+  character.classList.remove("is-emerging");
+  renderCharacterTransform();
+}, 1250);
+scene.focus();
+window.addEventListener("pointerdown", () => scene.focus());
+window.addEventListener("keydown", () => scene.focus());
+renderCharacterTransform();
 animationFrame = requestAnimationFrame(animate);
 
 window.addEventListener("beforeunload", () => {
