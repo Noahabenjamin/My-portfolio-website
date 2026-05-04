@@ -10,9 +10,18 @@ const keys = {
 };
 
 const player = {
-  x: 30,
-  y: 64,
+  x: 50,
+  y: 58,
   speed: 0.024,
+};
+
+const intro = {
+  active: true,
+  startedAt: null,
+  emergeMs: 1200,
+  crawlMs: 2400,
+  from: { x: 50, y: 58 },
+  to: { x: 16, y: 64 },
 };
 
 const limits = {
@@ -96,9 +105,55 @@ function hideArrowHint() {
   arrowHint.classList.add("hidden");
 }
 
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 function animate(now) {
   const delta = now - previousTime;
   previousTime = now;
+
+  if (intro.active) {
+    if (intro.startedAt === null) intro.startedAt = now;
+    const elapsed = now - intro.startedAt;
+    const emergeEnd = intro.emergeMs;
+    const crawlEnd = emergeEnd + intro.crawlMs;
+
+    if (elapsed < emergeEnd) {
+      player.x = intro.from.x;
+      player.y = intro.from.y;
+      character.classList.add("is-emerging", "is-intro-crawl");
+      character.classList.remove("is-walking");
+      character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
+      character.classList.add("facing-side", "left");
+      facingAngle = -90;
+      renderCharacterTransform();
+      updateCharacterTilt(-1, 0);
+    } else if (elapsed < crawlEnd) {
+      character.classList.remove("is-emerging");
+      character.classList.add("is-intro-crawl", "is-walking");
+      character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
+      character.classList.add("facing-side", "left");
+      const u = easeInOutCubic((elapsed - emergeEnd) / intro.crawlMs);
+      player.x = intro.from.x + (intro.to.x - intro.from.x) * u;
+      player.y = intro.from.y + (intro.to.y - intro.from.y) * u;
+      facingAngle = -90;
+      renderCharacterTransform();
+      updateCharacterTilt(-1, 0);
+    } else {
+      intro.active = false;
+      character.classList.remove("is-emerging", "is-intro-crawl", "is-walking", "facing-side", "left");
+      character.classList.add("facing-front");
+      facingAngle = 0;
+      renderCharacterTransform();
+      updateCharacterTilt(0, 0);
+    }
+
+    setCharacterPosition();
+    updateFog();
+    animationFrame = requestAnimationFrame(animate);
+    return;
+  }
 
   const step = player.speed * delta;
   let horizontal = 0;
@@ -155,12 +210,6 @@ window.addEventListener("blur", () => {
 
 setCharacterPosition();
 updateFog();
-character.classList.add("is-emerging");
-character.classList.add("facing-front");
-setTimeout(() => {
-  character.classList.remove("is-emerging");
-  renderCharacterTransform();
-}, 1250);
 scene.focus();
 window.addEventListener("pointerdown", () => scene.focus());
 window.addEventListener("keydown", () => scene.focus());
