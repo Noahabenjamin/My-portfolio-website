@@ -8,13 +8,25 @@
   </head>
   <body>
     <main class="opening-page">
-      <div class="scene">
-        <div class="sign-group" aria-label="Wooden sign with name">
-          <div class="sign-pole" aria-hidden="true"></div>
-          <div class="wood-sign">Noah Benjamin</div>
+      <div class="scene" id="scene">
+        <div class="world" id="world">
+          <div class="sign-group" aria-label="Wooden sign with name">
+            <div class="sign-pole" aria-hidden="true"></div>
+            <div class="wood-sign">Noah Benjamin</div>
+          </div>
+          <div class="sewer-hole" id="hole" aria-hidden="true"></div>
+          <div class="character" id="character" aria-label="Player character">
+            <span class="head"></span>
+            <span class="torso"></span>
+            <span class="arm arm-left"></span>
+            <span class="arm arm-right"></span>
+            <span class="leg leg-left"></span>
+            <span class="leg leg-right"></span>
+          </div>
         </div>
-        <div class="sewer-hole" aria-hidden="true"></div>
       </div>
+      <p class="hint">Move with arrow keys</p>
     </main>
+    <script src="script.js"></script>
   </body>
 </html>
