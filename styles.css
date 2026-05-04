@@ -35,7 +35,14 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: transparent;
+  background:
+    radial-gradient(
+      ellipse var(--clear-w) var(--clear-h) at var(--clear-x) var(--clear-y),
+      rgba(255, 255, 255, 0) 0 52%,
+      rgba(100, 100, 100, calc(var(--fog-alpha) * 0.35)) 70%,
+      rgba(85, 85, 85, calc(var(--fog-alpha) * 0.62)) 87%,
+      rgba(70, 70, 70, calc(var(--fog-alpha) * 0.85)) 100%
+    );
   pointer-events: none;
   z-index: 10;
 }
@@ -187,38 +194,15 @@ body {
   height: calc(var(--char-size) * 1.95);
   transform: translate(-50%, -50%) rotateX(var(--pitch)) rotateY(var(--facing, 0deg)) rotateZ(var(--roll));
   transform-style: preserve-3d;
-  perspective: 520px;
+  perspective: 760px;
   z-index: 6;
-  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.12));
 }
 
 .character-model {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  transform: translateZ(8px);
-}
-
-.character-model::before,
-.character-model::after {
-  content: "";
-  position: absolute;
-  top: 25%;
-  width: 11%;
-  height: 48%;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ebebeb 0%, #d8d8d8 100%);
-  box-shadow: inset -4px -6px 7px rgba(0, 0, 0, 0.08);
-  opacity: 0.75;
-  transform: translateZ(-6px);
-}
-
-.character-model::before {
-  left: 10%;
-}
-
-.character-model::after {
-  right: 10%;
+  transform: translateZ(12px);
 }
 
 .character.is-emerging .character-model {
@@ -243,7 +227,7 @@ body {
   left: 26%;
   top: 0;
   z-index: 2;
-  transform: translateZ(10px);
+  transform: translateZ(14px);
 }
 
 .character .head::before {
@@ -252,7 +236,7 @@ body {
   inset: 8% 7%;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  transform: translateZ(-4px);
+  transform: translateZ(-10px) scale(0.93);
 }
 
 .character .torso {
@@ -262,7 +246,7 @@ body {
   top: 15%;
   border-radius: 44% 44% 40% 40% / 34% 34% 52% 52%;
   z-index: 1;
-  transform: translateZ(6px);
+  transform: translateZ(10px);
 }
 
 .character .torso::before {
@@ -271,7 +255,7 @@ body {
   inset: 6% 7% 8%;
   border-radius: inherit;
   background: radial-gradient(circle at 66% 72%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 48%);
-  transform: translateZ(-5px);
+  transform: translateZ(-12px) scale(0.92);
 }
 
 .character .arm {
@@ -284,12 +268,12 @@ body {
 
 .character .arm-left {
   left: 3%;
-  transform: translateZ(3px) rotate(4deg);
+  transform: translateZ(8px) rotate(4deg);
 }
 
 .character .arm-right {
   right: 3%;
-  transform: translateZ(3px) rotate(-4deg);
+  transform: translateZ(8px) rotate(-4deg);
 }
 
 .character .leg {
@@ -302,12 +286,12 @@ body {
 
 .character .leg-left {
   left: 27%;
-  transform: translateZ(1px) rotate(3deg);
+  transform: translateZ(6px) rotate(3deg);
 }
 
 .character .leg-right {
   right: 27%;
-  transform: translateZ(1px) rotate(-3deg);
+  transform: translateZ(6px) rotate(-3deg);
 }
 
 .character .hand {
@@ -364,19 +348,17 @@ body {
   opacity: 0;
 }
 
+.character.facing-back .head {
+  transform: translateZ(6px) scaleX(0.93);
+}
+
+.character.facing-back .torso {
+  transform: translateZ(8px) scaleX(0.94);
+}
+
 .character.facing-side .face-line {
   width: 20%;
   left: 40%;
-}
-
-.character.facing-side .torso {
-  width: 62%;
-  left: 19%;
-}
-
-.character.facing-side .character-model::before,
-.character.facing-side .character-model::after {
-  opacity: 0.92;
 }
 
 .character.facing-side .eye-left {
@@ -395,59 +377,75 @@ body {
   opacity: 1;
 }
 
+.character.facing-side .torso {
+  width: 60%;
+  left: 20%;
+  transform: translateZ(14px) scaleX(0.72);
+}
+
+.character.facing-side .arm-left,
+.character.facing-side .arm-right {
+  width: 22%;
+}
+
+.character.facing-side.left .arm-left,
+.character.facing-side.right .arm-right {
+  transform: translateZ(16px) rotate(4deg);
+}
+
+.character.facing-side.left .arm-right,
+.character.facing-side.right .arm-left {
+  transform: translateZ(2px) rotate(-3deg);
+}
+
+.character.facing-side .leg-left,
+.character.facing-side .leg-right {
+  width: 22%;
+}
+
 .character.is-walking .arm-left {
-  animation: arm-swing-left 0.6s ease-in-out infinite alternate;
+  animation: arm-swing 0.62s ease-in-out infinite;
 }
 
 .character.is-walking .arm-right {
-  animation: arm-swing-right 0.6s ease-in-out infinite alternate;
+  animation: arm-swing 0.62s ease-in-out infinite;
+  animation-delay: -0.31s;
 }
 
 .character.is-walking .leg-left {
-  animation: leg-swing-right 0.6s ease-in-out infinite alternate;
+  animation: leg-swing 0.62s ease-in-out infinite;
+  animation-delay: -0.31s;
 }
 
 .character.is-walking .leg-right {
-  animation: leg-swing-left 0.6s ease-in-out infinite alternate;
+  animation: leg-swing 0.62s ease-in-out infinite;
 }
 
 .character.is-walking .character-model {
-  animation: body-bob 0.6s ease-in-out infinite;
+  animation: body-bob 0.62s ease-in-out infinite;
 }
 
-@keyframes arm-swing-left {
-  from {
-    transform: translateZ(3px) rotate(4.5deg);
+@keyframes arm-swing {
+  0% {
+    transform: translateZ(8px) rotate(7deg);
   }
-  to {
-    transform: translateZ(3px) rotate(-4.5deg);
+  50% {
+    transform: translateZ(8px) rotate(0deg);
   }
-}
-
-@keyframes arm-swing-right {
-  from {
-    transform: translateZ(3px) rotate(-4.5deg);
-  }
-  to {
-    transform: translateZ(3px) rotate(4.5deg);
+  100% {
+    transform: translateZ(8px) rotate(-7deg);
   }
 }
 
-@keyframes leg-swing-left {
-  from {
-    transform: translateZ(1px) rotate(3.5deg);
+@keyframes leg-swing {
+  0% {
+    transform: translateZ(6px) rotate(-6deg);
   }
-  to {
-    transform: translateZ(1px) rotate(-3.5deg);
+  50% {
+    transform: translateZ(6px) rotate(0deg);
   }
-}
-
-@keyframes leg-swing-right {
-  from {
-    transform: translateZ(1px) rotate(-3.5deg);
-  }
-  to {
-    transform: translateZ(1px) rotate(3.5deg);
+  100% {
+    transform: translateZ(6px) rotate(6deg);
   }
 }
 
@@ -484,15 +482,10 @@ body {
 
 .arrow-hint {
   position: absolute;
-  right: clamp(92px, 8.5vw, 140px);
-  bottom: clamp(74px, 8.2vw, 124px);
-  width: 172px;
-  height: 136px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  column-gap: 34px;
-  row-gap: 22px;
+  right: clamp(86px, 9vw, 160px);
+  bottom: clamp(96px, 10vw, 180px);
+  width: 186px;
+  height: 148px;
   pointer-events: none;
   opacity: 0.78;
   transition: opacity 320ms ease;
@@ -505,10 +498,8 @@ body {
 
 .arrow {
   position: relative;
-  width: 34px;
-  height: 16px;
-  justify-self: center;
-  align-self: center;
+  width: 56px;
+  height: 26px;
   animation: arrow-pulse 1.3s ease-in-out infinite;
 }
 
@@ -517,8 +508,8 @@ body {
   position: absolute;
   left: 0;
   top: 50%;
-  width: 24px;
-  height: 2.5px;
+  width: 32px;
+  height: 3px;
   background: #0d0d0d;
   transform: translateY(-50%);
 }
@@ -528,37 +519,40 @@ body {
   position: absolute;
   right: 0;
   top: 50%;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 14px solid #0d0d0d;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 24px solid #0d0d0d;
   transform: translateY(-50%);
 }
 
 .arrow-up {
-  grid-column: 2;
-  grid-row: 1;
-  transform: rotate(0deg);
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) rotate(-90deg);
 }
 
 .arrow-left {
-  grid-column: 1;
-  grid-row: 2;
-  transform: rotate(-90deg);
-  margin-top: -10px;
+  position: absolute;
+  left: 0;
+  top: 42px;
+  transform: rotate(180deg);
 }
 
 .arrow-down {
-  grid-column: 2;
-  grid-row: 2;
-  transform: rotate(180deg);
-  margin-top: 10px;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) rotate(90deg);
 }
 
 .arrow-right {
-  grid-column: 3;
-  grid-row: 2;
-  transform: rotate(90deg);
-  margin-top: -10px;
+  position: absolute;
+  right: 0;
+  top: 42px;
+  transform: rotate(0deg);
 }
 
 @keyframes arrow-pulse {
