@@ -18,9 +18,9 @@ const player = {
 const intro = {
   active: true,
   startedAt: null,
-  emergeMs: 1200,
-  crawlMs: 2400,
-  from: { x: 50, y: 58 },
+  emergeMs: 1400,
+  crawlMs: 2600,
+  from: { x: 3, y: 84 },
   to: { x: 16, y: 64 },
 };
 
@@ -125,21 +125,21 @@ function animate(now) {
       character.classList.add("is-emerging", "is-intro-crawl");
       character.classList.remove("is-walking");
       character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
-      character.classList.add("facing-side", "left");
-      facingAngle = -90;
+      character.classList.add("facing-side", "right");
+      facingAngle = 90;
       renderCharacterTransform();
-      updateCharacterTilt(-1, 0);
+      updateCharacterTilt(1, 0);
     } else if (elapsed < crawlEnd) {
       character.classList.remove("is-emerging");
       character.classList.add("is-intro-crawl", "is-walking");
       character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
-      character.classList.add("facing-side", "left");
+      character.classList.add("facing-side", "right");
       const u = easeInOutCubic((elapsed - emergeEnd) / intro.crawlMs);
       player.x = intro.from.x + (intro.to.x - intro.from.x) * u;
       player.y = intro.from.y + (intro.to.y - intro.from.y) * u;
-      facingAngle = -90;
+      facingAngle = 90;
       renderCharacterTransform();
-      updateCharacterTilt(-1, 0);
+      updateCharacterTilt(1, 0);
     } else {
       intro.active = false;
       character.classList.remove("is-emerging", "is-intro-crawl", "is-walking", "facing-side", "left");

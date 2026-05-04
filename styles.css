@@ -63,40 +63,23 @@ body {
   aspect-ratio: 1 / 1;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: linear-gradient(180deg, #6d6d6d 0%, #c2c2c2 34%, #5f5f5f 70%, #353535 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-    0 8px 10px rgba(0, 0, 0, 0.14);
+  background: transparent;
   z-index: 4;
 }
 
 .sewer-hole::before {
   content: "";
   position: absolute;
-  left: 10%;
-  top: 34%;
-  width: 80%;
-  height: 58%;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 34%, #050505 0%, #010101 75%);
-  box-shadow: inset 0 6px 10px rgba(0, 0, 0, 0.5);
+  background: radial-gradient(ellipse at 50% 38%, #010101 0%, #030303 40%, rgba(4, 4, 4, 0.55) 68%, rgba(0, 0, 0, 0) 100%);
 }
 
 .sewer-hole::after {
-  content: "";
-  position: absolute;
-  left: 14%;
-  top: 8%;
-  width: 72%;
-  height: 14%;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.02),
-    rgba(255, 255, 255, 0.36),
-    rgba(255, 255, 255, 0.02)
-  );
-  filter: blur(0.4px);
+  display: none;
 }
 
 .sign-group {
@@ -183,6 +166,8 @@ body {
   transform: skewY(-22deg);
 }
 
+/* ─── Character ─── */
+
 .character {
   --char-size: clamp(56px, 5vw, 74px);
   --pitch: 0deg;
@@ -224,19 +209,42 @@ body {
   animation: crawl-out 1.3s cubic-bezier(0.19, 0.85, 0.35, 1) forwards;
 }
 
+/* Base styles for all character body-part spans */
 .character span {
   position: absolute;
   display: block;
   border-radius: 999px;
   background:
-    radial-gradient(ellipse 120% 90% at 32% 22%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
-    radial-gradient(circle at 34% 26%, #ffffff 0%, #f4f4f4 58%, #dfdfdf 100%);
-  border: 1px solid #d7d7d7;
+    radial-gradient(ellipse 130% 95% at 28% 18%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0) 40%),
+    radial-gradient(circle at 34% 26%, #ffffff 0%, #f2f2f2 52%, #d8d8d8 100%);
+  border: 1px solid #d0d0d0;
   transform-style: preserve-3d;
   box-shadow:
-    inset -10px -14px 22px rgba(0, 0, 0, 0.1),
-    inset 10px 12px 18px rgba(255, 255, 255, 0.78),
+    inset -12px -16px 26px rgba(0, 0, 0, 0.13),
+    inset 12px 14px 20px rgba(255, 255, 255, 0.82),
     0 6px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* 3-D side-face panel — right edge depth for front view */
+.character .face-3d {
+  position: absolute;
+  right: -1px;
+  top: 8%;
+  width: 9px;
+  height: 84%;
+  transform-origin: right center;
+  transform: rotateY(-90deg);
+  background: linear-gradient(180deg, #c0c0c0 0%, #a8a8a8 55%, #929292 100%);
+  border: none;
+  box-shadow: inset -2px 0 8px rgba(0, 0, 0, 0.22);
+  border-radius: 1px 0 0 1px;
+  pointer-events: none;
+  transform-style: flat;
+}
+
+/* Hide depth panels in side view — they'd appear as front face due to 90° world rotation */
+.character.facing-side .face-3d {
+  display: none;
 }
 
 .character .head {
@@ -272,7 +280,7 @@ body {
   position: absolute;
   inset: 6% 7% 8%;
   border-radius: inherit;
-  background: radial-gradient(circle at 66% 72%, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 48%);
+  background: radial-gradient(circle at 66% 72%, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0) 48%);
   transform: translateZ(-12px) scale(0.92);
 }
 
@@ -421,63 +429,101 @@ body {
   width: 22%;
 }
 
+/* ─── Walking animations ─── */
+
 .character.is-walking .arm-left {
-  animation: arm-swing 0.62s ease-in-out infinite;
+  animation: arm-swing 0.58s ease-in-out infinite;
 }
 
 .character.is-walking .arm-right {
-  animation: arm-swing 0.62s ease-in-out infinite;
-  animation-delay: -0.31s;
+  animation: arm-swing 0.58s ease-in-out infinite;
+  animation-delay: -0.29s;
 }
 
 .character.is-walking .leg-left {
-  animation: leg-swing 0.62s ease-in-out infinite;
-  animation-delay: -0.31s;
+  animation: leg-swing 0.58s ease-in-out infinite;
+  animation-delay: -0.29s;
 }
 
 .character.is-walking .leg-right {
-  animation: leg-swing 0.62s ease-in-out infinite;
+  animation: leg-swing 0.58s ease-in-out infinite;
 }
 
 .character.is-walking .character-model {
-  animation: body-bob 0.62s ease-in-out infinite;
+  animation: body-bob 0.58s ease-in-out infinite;
+}
+
+.character.is-walking .head {
+  animation: head-bob 0.58s ease-in-out infinite;
 }
 
 .character.is-intro-crawl.is-walking .character-model {
-  animation: body-bob-intro 0.62s ease-in-out infinite;
+  animation: body-bob-intro 0.58s ease-in-out infinite;
 }
 
+/* Arm swings opposite to same-side leg — counter-phase via animation-delay */
 @keyframes arm-swing {
   0% {
-    transform: translateZ(8px) rotate(7deg);
+    transform: translateZ(8px) rotate(-18deg);
   }
   50% {
-    transform: translateZ(8px) rotate(0deg);
+    transform: translateZ(8px) rotate(18deg);
   }
   100% {
-    transform: translateZ(8px) rotate(-7deg);
+    transform: translateZ(8px) rotate(-18deg);
   }
 }
 
+/* Legs swing with slight Z-depth shift for 3-D stride feel */
 @keyframes leg-swing {
   0% {
-    transform: translateZ(6px) rotate(-6deg);
+    transform: translateZ(5px) rotate(-22deg);
+  }
+  25% {
+    transform: translateZ(8px) rotate(-6deg);
   }
   50% {
-    transform: translateZ(6px) rotate(0deg);
+    transform: translateZ(5px) rotate(22deg);
+  }
+  75% {
+    transform: translateZ(2px) rotate(6deg);
   }
   100% {
-    transform: translateZ(6px) rotate(6deg);
+    transform: translateZ(5px) rotate(-22deg);
   }
 }
 
+/* Body rises twice per stride (once per step), with slight hip sway */
 @keyframes body-bob {
   0%,
   100% {
-    transform: translateZ(12px) rotateX(-4deg) translateY(0);
+    transform: translateZ(12px) rotateX(-4deg) translateY(0) rotateZ(0.8deg);
+  }
+  25% {
+    transform: translateZ(12px) rotateX(-4.5deg) translateY(-3px) rotateZ(0deg);
   }
   50% {
-    transform: translateZ(12px) rotateX(-4deg) translateY(1.5px);
+    transform: translateZ(12px) rotateX(-4deg) translateY(0) rotateZ(-0.8deg);
+  }
+  75% {
+    transform: translateZ(12px) rotateX(-4.5deg) translateY(-3px) rotateZ(0deg);
+  }
+}
+
+/* Subtle head sway counter to hip sway */
+@keyframes head-bob {
+  0%,
+  100% {
+    transform: translateZ(14px) rotateZ(-1deg);
+  }
+  25% {
+    transform: translateZ(15px) translateY(-1px) rotateZ(0deg);
+  }
+  50% {
+    transform: translateZ(14px) rotateZ(1deg);
+  }
+  75% {
+    transform: translateZ(15px) translateY(-1px) rotateZ(0deg);
   }
 }
 
@@ -494,12 +540,12 @@ body {
 @keyframes crawl-out {
   0% {
     opacity: 0;
-    transform: translateY(34%) translateZ(-20px) scale(0.82);
-    filter: blur(1.1px);
+    transform: translateY(40%) translateZ(-22px) scale(0.8);
+    filter: blur(1.2px);
   }
-  42% {
+  40% {
     opacity: 1;
-    transform: translateY(-12%) translateZ(10px) scale(0.96);
+    transform: translateY(-10%) translateZ(10px) scale(0.96);
     filter: blur(0);
   }
   72% {
@@ -512,20 +558,16 @@ body {
   }
 }
 
+/* ─── Arrow hint ─── */
+
 .arrow-hint {
-  /* Tight vertical gap between bottom of up arrow and top of down arrow */
-  --arrow-v-gap: 8px;
-  /* Up center y ≈ 13px; down center y = 26 + gap + 13 */
-  --arrow-c-down: calc(26px + var(--arrow-v-gap) + 13px);
-  /* Center-to-center distance up↔down */
-  --arrow-ud: calc(var(--arrow-c-down) - 13px);
-  /* Side arrows: midpoint between up/down + half that span, aligned to arrow center */
-  --arrow-side-y: calc(var(--arrow-c-down) - 13px);
+  --arrow-v-gap: 22px;
+  --arrow-side-y: calc(21px + var(--arrow-v-gap));
   position: absolute;
   right: clamp(86px, 9vw, 160px);
   bottom: clamp(96px, 10vw, 180px);
-  width: 168px;
-  height: calc(26px + var(--arrow-v-gap) + 26px);
+  width: 134px;
+  height: calc(21px + var(--arrow-v-gap) + 21px);
   pointer-events: none;
   opacity: 0.78;
   transition: opacity 320ms ease;
@@ -538,8 +580,8 @@ body {
 
 .arrow {
   position: relative;
-  width: 56px;
-  height: 26px;
+  width: 45px;
+  height: 21px;
   animation: arrow-pulse 1.3s ease-in-out infinite;
 }
 
@@ -548,8 +590,8 @@ body {
   position: absolute;
   left: 0;
   top: 50%;
-  width: 32px;
-  height: 3px;
+  width: 26px;
+  height: 2px;
   background: #0d0d0d;
   transform: translateY(-50%);
 }
@@ -561,9 +603,9 @@ body {
   top: 50%;
   width: 0;
   height: 0;
-  border-top: 13px solid transparent;
-  border-bottom: 13px solid transparent;
-  border-left: 24px solid #0d0d0d;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 19px solid #0d0d0d;
   transform: translateY(-50%);
 }
 
@@ -584,7 +626,7 @@ body {
 .arrow-down {
   position: absolute;
   left: 50%;
-  top: calc(26px + var(--arrow-v-gap));
+  top: calc(21px + var(--arrow-v-gap));
   transform: translate(-50%, 0) rotate(90deg);
 }
 
