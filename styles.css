@@ -18,55 +18,93 @@ body {
 }
 
 .scene {
+  --hole-size: clamp(145px, 16vw, 210px);
+  --sign-width: clamp(110px, 12vw, 155px);
   position: relative;
   width: min(92vw, 950px);
   height: min(92vh, 650px);
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+
+.scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.03));
+  transform: rotateX(10deg);
+  z-index: 0;
 }
 
 .sewer-hole {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: clamp(190px, 22vw, 270px);
+  width: var(--hole-size);
   aspect-ratio: 1 / 1;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotateX(16deg);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0) 45%),
-    radial-gradient(circle at center, #0f0f10 0%, #0a0a0b 70%, #050506 100%);
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0) 44%),
+    radial-gradient(circle at center, #0f0f10 0%, #0b0b0c 70%, #050506 100%);
   box-shadow:
-    inset 0 0 0 12px #595959,
-    inset 0 0 0 20px #7b7b7b,
-    0 26px 36px rgba(0, 0, 0, 0.3);
-  z-index: 2;
+    inset 0 0 0 9px #595959,
+    inset 0 0 0 15px #7b7b7b,
+    inset 0 13px 18px rgba(0, 0, 0, 0.45),
+    0 20px 26px rgba(0, 0, 0, 0.28);
+  z-index: 3;
+}
+
+.sign-group {
+  position: absolute;
+  top: 34%;
+  left: 62%;
+  width: var(--sign-width);
+  transform: rotate(-13deg) rotateX(8deg) translateZ(-26px);
+  z-index: 1;
+}
+
+.sign-pole {
+  position: absolute;
+  left: 50%;
+  top: -9px;
+  transform: translateX(-50%);
+  width: clamp(12px, 1.3vw, 16px);
+  height: var(--sign-width);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, #7e4f2d 0%, #99623b 48%, #7d4b2a 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 8px, rgba(0, 0, 0, 0.06) 8px 16px);
+  box-shadow:
+    0 8px 12px rgba(0, 0, 0, 0.25),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .wood-sign {
   position: absolute;
-  top: 30%;
-  left: 62%;
-  transform: rotate(-12deg);
-  width: clamp(220px, 30vw, 330px);
-  padding: 18px 26px;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--sign-width);
+  padding: 12px 14px;
   border-radius: 8px;
-  border: 3px solid #6e3f1f;
+  border: 2px solid #6e3f1f;
   background:
     repeating-linear-gradient(
       10deg,
-      #8a552f 0px,
-      #8a552f 9px,
-      #9a6338 9px,
-      #9a6338 18px
+      #8a552f 0 9px,
+      #9a6338 9px 18px
     );
-  color: #f8f2da;
-  font-size: clamp(1.2rem, 2.2vw, 2rem);
-  letter-spacing: 0.06em;
+  color: #ffffff;
+  font-size: clamp(0.8rem, 1.3vw, 1.05rem);
+  letter-spacing: 0.04em;
   text-transform: none;
   text-align: center;
   font-weight: 700;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   box-shadow:
-    0 8px 14px rgba(0, 0, 0, 0.28),
+    0 6px 10px rgba(0, 0, 0, 0.28),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   z-index: 1;
 }
