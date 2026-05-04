@@ -48,19 +48,9 @@ function updateCharacterTilt(horizontal, vertical) {
 }
 
 function updateFog() {
-  const dx = player.x - 50;
-  const dy = (player.y - 56) * 0.66;
-  const distance = Math.hypot(dx, dy);
-  const maxDistance = 38;
-  const proximity = clamp(1 - distance / maxDistance, 0, 1);
-
-  const fogAlpha = 0.92 * proximity;
-  const clearW = 74 - proximity * 40;
-  const clearH = 58 - proximity * 24;
-
-  scene.style.setProperty("--fog-alpha", fogAlpha.toFixed(3));
-  scene.style.setProperty("--clear-w", `${clearW.toFixed(2)}%`);
-  scene.style.setProperty("--clear-h", `${clearH.toFixed(2)}%`);
+  scene.style.setProperty("--fog-alpha", "0");
+  scene.style.setProperty("--clear-w", "74%");
+  scene.style.setProperty("--clear-h", "58%");
 }
 
 function setFacingClasses(horizontal, vertical) {

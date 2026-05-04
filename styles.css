@@ -35,14 +35,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(
-      ellipse var(--clear-w) var(--clear-h) at var(--clear-x) var(--clear-y),
-      rgba(255, 255, 255, 0) 0 52%,
-      rgba(100, 100, 100, calc(var(--fog-alpha) * 0.35)) 70%,
-      rgba(85, 85, 85, calc(var(--fog-alpha) * 0.62)) 87%,
-      rgba(70, 70, 70, calc(var(--fog-alpha) * 0.85)) 100%
-    );
+  background: transparent;
   pointer-events: none;
   z-index: 10;
 }
@@ -196,6 +189,7 @@ body {
   transform-style: preserve-3d;
   perspective: 520px;
   z-index: 6;
+  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.12));
 }
 
 .character-model {
@@ -203,6 +197,28 @@ body {
   inset: 0;
   transform-style: preserve-3d;
   transform: translateZ(8px);
+}
+
+.character-model::before,
+.character-model::after {
+  content: "";
+  position: absolute;
+  top: 25%;
+  width: 11%;
+  height: 48%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ebebeb 0%, #d8d8d8 100%);
+  box-shadow: inset -4px -6px 7px rgba(0, 0, 0, 0.08);
+  opacity: 0.75;
+  transform: translateZ(-6px);
+}
+
+.character-model::before {
+  left: 10%;
+}
+
+.character-model::after {
+  right: 10%;
 }
 
 .character.is-emerging .character-model {
@@ -353,6 +369,16 @@ body {
   left: 40%;
 }
 
+.character.facing-side .torso {
+  width: 62%;
+  left: 19%;
+}
+
+.character.facing-side .character-model::before,
+.character.facing-side .character-model::after {
+  opacity: 0.92;
+}
+
 .character.facing-side .eye-left {
   opacity: 1;
 }
@@ -378,11 +404,11 @@ body {
 }
 
 .character.is-walking .leg-left {
-  animation: leg-swing-left 0.6s ease-in-out infinite alternate;
+  animation: leg-swing-right 0.6s ease-in-out infinite alternate;
 }
 
 .character.is-walking .leg-right {
-  animation: leg-swing-right 0.6s ease-in-out infinite alternate;
+  animation: leg-swing-left 0.6s ease-in-out infinite alternate;
 }
 
 .character.is-walking .character-model {
@@ -458,15 +484,15 @@ body {
 
 .arrow-hint {
   position: absolute;
-  right: clamp(42px, 4.5vw, 78px);
-  bottom: clamp(44px, 4.5vw, 82px);
-  width: 142px;
-  height: 124px;
+  right: clamp(92px, 8.5vw, 140px);
+  bottom: clamp(74px, 8.2vw, 124px);
+  width: 172px;
+  height: 136px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  column-gap: 30px;
-  row-gap: 26px;
+  column-gap: 34px;
+  row-gap: 22px;
   pointer-events: none;
   opacity: 0.78;
   transition: opacity 320ms ease;
@@ -479,8 +505,8 @@ body {
 
 .arrow {
   position: relative;
-  width: 18px;
-  height: 18px;
+  width: 34px;
+  height: 16px;
   justify-self: center;
   align-self: center;
   animation: arrow-pulse 1.3s ease-in-out infinite;
@@ -489,24 +515,23 @@ body {
 .arrow::before {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 3px;
-  width: 1.5px;
-  height: 12px;
+  left: 0;
+  top: 50%;
+  width: 24px;
+  height: 2.5px;
   background: #0d0d0d;
-  transform: translateX(-50%);
+  transform: translateY(-50%);
 }
 
 .arrow::after {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 2px;
-  width: 8px;
-  height: 8px;
-  border-top: 1.5px solid #0d0d0d;
-  border-right: 1.5px solid #0d0d0d;
-  transform: translateX(-50%) rotate(-45deg);
+  right: 0;
+  top: 50%;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 14px solid #0d0d0d;
+  transform: translateY(-50%);
 }
 
 .arrow-up {
@@ -519,6 +544,7 @@ body {
   grid-column: 1;
   grid-row: 2;
   transform: rotate(-90deg);
+  margin-top: -10px;
 }
 
 .arrow-down {
@@ -532,6 +558,7 @@ body {
   grid-column: 3;
   grid-row: 2;
   transform: rotate(90deg);
+  margin-top: -10px;
 }
 
 @keyframes arrow-pulse {
