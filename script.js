@@ -1,7 +1,65 @@
 const scene = document.getElementById("scene");
+const world = document.getElementById("world");
 const character = document.getElementById("character");
+const characterModel = document.getElementById("characterModel");
 const arrowHint = document.getElementById("arrowHint");
 const portalWorld = document.getElementById("portalWorld");
+const portalChar = document.getElementById("portalChar");
+const portalModel = document.getElementById("portalModel");
+const cobbleFloor = document.getElementById("cobbleFloor");
+
+// ─── 3-D Baymax body-part HTML generator ───
+// Each body part is a 3-D box with 6 faces. Head also gets eyes & face-line on
+// the front face plus side-eyes on the left/right faces so Baymax's face stays
+// readable from any angle.
+
+function box(extra = "") {
+  return `
+    <span class="face f-front">${extra}</span>
+    <span class="face f-back"></span>
+    <span class="face f-right"></span>
+    <span class="face f-left"></span>
+    <span class="face f-top"></span>
+    <span class="face f-bottom"></span>
+  `;
+}
+
+function headBox() {
+  return `
+    <span class="face f-front">
+      <span class="face-line"></span>
+      <span class="eye eye-left"></span>
+      <span class="eye eye-right"></span>
+    </span>
+    <span class="face f-back"></span>
+    <span class="face f-right">
+      <span class="side-eye"></span>
+      <span class="side-line"></span>
+    </span>
+    <span class="face f-left">
+      <span class="side-eye"></span>
+      <span class="side-line"></span>
+    </span>
+    <span class="face f-top"></span>
+    <span class="face f-bottom"></span>
+  `;
+}
+
+function buildBaymax(target) {
+  target.innerHTML = `
+    <span class="head body-part">${headBox()}</span>
+    <span class="torso body-part">${box()}</span>
+    <span class="arm arm-left body-part">${box()}<span class="hand body-part">${box()}</span></span>
+    <span class="arm arm-right body-part">${box()}<span class="hand body-part">${box()}</span></span>
+    <span class="leg leg-left body-part">${box()}<span class="foot body-part">${box()}</span></span>
+    <span class="leg leg-right body-part">${box()}<span class="foot body-part">${box()}</span></span>
+  `;
+}
+
+buildBaymax(characterModel);
+buildBaymax(portalModel);
+
+// ─── Player & game state ───
 
 const keys = {
   ArrowUp: false,
@@ -41,6 +99,7 @@ let previousTime = performance.now();
 let facingAngle = 0;
 let arrowHintHidden = false;
 let isFalling = false;
+let portalReady = false;        // true once portal scene is fully visible & key-dismissable
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -115,34 +174,71 @@ function easeInOutCubic(t) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
+// ─── Fall sequence: camera dive → portal scene → confused float → drop to cobble ───
+
 function startFalling() {
   isFalling = true;
   Object.keys(keys).forEach((k) => { keys[k] = false; });
   character.classList.remove("is-walking");
+
+  // 1. World camera dives into the hole (1.5s) — rotates 40° → 92° + scale 9x
+  world.classList.add("diving");
+
+  // 2. Character spirals/shrinks into hole (1.5s, in parallel)
   character.classList.add("is-falling");
-  // Portal expands after the character has mostly vanished
+
+  // 3. Once camera dive nearly complete, reveal portal scene
   setTimeout(() => {
     portalWorld.classList.add("active");
     portalWorld.setAttribute("aria-hidden", "false");
-  }, 850);
+    portalChar.classList.add("confused");
+  }, 1300);
+
+  // 4. After confused float (3.4s), drop to cobble floor
+  setTimeout(() => {
+    cobbleFloor.classList.add("show");
+  }, 1300 + 2800);
+
+  setTimeout(() => {
+    portalChar.classList.remove("confused");
+    portalChar.classList.add("dropping");
+  }, 1300 + 3400);
+
+  // 5. After landing, allow keypress to dismiss
+  setTimeout(() => {
+    portalReady = true;
+  }, 1300 + 3400 + 1400);
 }
 
 function returnFromPortal() {
+  if (!portalReady) return;
+  portalReady = false;
+
   portalWorld.classList.remove("active");
   portalWorld.setAttribute("aria-hidden", "true");
+
   setTimeout(() => {
-    isFalling = false;
+    // Reset world camera
+    world.classList.remove("diving");
+
+    // Reset character
     character.classList.remove("is-falling");
+    portalChar.classList.remove("confused", "dropping");
+    cobbleFloor.classList.remove("show");
+
     player.x = 16;
     player.y = 64;
     setCharacterPosition();
     updateFog();
+
     character.classList.remove("facing-front", "facing-back", "facing-side", "left", "right");
     character.classList.add("facing-front");
     facingAngle = 0;
     renderCharacterTransform();
     updateCharacterTilt(0, 0);
-  }, 900);
+
+    isFalling = false;
+  }, 600);
 }
 
 function animate(now) {
@@ -239,9 +335,10 @@ function isArrowKey(key) {
 
 window.addEventListener("keydown", (event) => {
   if (isFalling) {
-    if (portalWorld.classList.contains("active")) {
+    if (portalReady) {
       returnFromPortal();
     }
+    event.preventDefault();
     return;
   }
   if (!isArrowKey(event.key)) return;
